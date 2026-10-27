@@ -24,7 +24,7 @@ jobs:
       - name: Extract project
         run: |
           mkdir project
-          unzip EaglerProtector-source.zip -d project
+         unzip EaglerProtector-source-fixed.zip -d project
           find project -name pom.xml
 
       - name: Build plugin
