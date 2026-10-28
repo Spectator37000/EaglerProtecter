@@ -20,11 +20,21 @@ jobs:
         with:
           distribution: temurin
           java-version: "8"
-
       - name: Extract project
         run: |
           mkdir project
           unzip EaglerProtector-source-fixed.zip -d project
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path("project/src/main/java/com/example/eaglerprotector/EaglerProtector.java")
+          s = p.read_text()
+          s = s.replace("org.bukkit.block.EnderChest", "org.bukkit.block.Chest")
+          imp = "import org.bukkit.event.entity.EntityExplodeEvent;"
+          if imp not in s:
+              s = s.replace("import org.bukkit.event.block.*;", "import org.bukkit.event.block.*;\n" + imp)
+          s = "\n".join(line for line in s.splitlines() if "org.bukkit.block.EnderChest" not in line) + "\n"
+          p.write_text(s)
+          PY
           find project -name pom.xml
 
       - name: Build plugin
